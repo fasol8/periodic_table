@@ -1,6 +1,7 @@
 const fetchObjects = require("./fetchObjects.js");
 const jsdom = require("jsdom");
 const fs = require("fs");
+const { group } = require("console");
 
 const cleanData = (response) => {
   let tdElements = [];
@@ -88,6 +89,53 @@ const toCSV = (obj) => {
   console.log("create file csv");
 };
 
+const toHTML = (obj) => {
+  groupElements = groupByElemet(obj);
+  for (const group of groupElements) {
+    let { element } = group[0];
+    let tableD = buildcomponentTD(group);
+    let component = buildComponent(element, element, tableD);
+    console.log(component);
+  }
+};
+
+const buildComponent = (id_component, name_component, componentTD) => {
+  return `<div class="description  group-web-components" id="${id_component}">
+    <h2><a href="https://developer.mozilla.org/en/docs/Web/HTML/Element/shadow">&lt;${name_component}&gt;</a></h2>
+    ${componentTD}
+</div>`;
+};
+
+const buildcomponentTD = (component) => {
+  let htmlTD = "<table>";
+  for (const row of component) {
+    let { element, level, compound, average, max, min } = row;
+
+    htmlTD += `
+      <tr>
+        <td>${element}</td>
+        <td>${level}</td>
+        <td>${compound}</td>
+        <td>${average}</td>
+        <td>${min}</td>
+        <td>${max}</td>
+      </tr>`;
+  }
+  return (htmlTD += "\n      </table>");
+};
+
+const groupByElemet = (elementsArraysTD) => {
+  const groupedData = elementsArraysTD.reduce((result, obj) => {
+    const { element } = obj;
+    if (!result[element]) {
+      result[element] = [];
+    }
+    result[element].push(obj);
+    return result;
+  }, {});
+  return Object.values(groupedData);
+};
+
 const fetchInfo = (url, params) => {
   return new Promise((resolve, reject) => {
     fetch(url, params)
@@ -124,6 +172,147 @@ const scrapData = () => {
   });
 };
 
-scrapData().then((df) => {
-  toCSV(df);
-});
+// scrapData().then((df) => {
+//   toCSV(df);
+// });
+
+let a = [
+  {
+    element: "Cm",
+    level: "4f7/2",
+    compound: "CmOx",
+    average: 472.7,
+    max: 472.7,
+    min: 472.7,
+  },
+  {
+    element: "Cm",
+    level: "5d5/2",
+    compound: "CmOx",
+    average: 113.2,
+    max: 113.2,
+    min: 113.2,
+  },
+  {
+    element: "Cm",
+    level: "5p3/2",
+    compound: "CmOx",
+    average: 231.7,
+    max: 231.7,
+    min: 231.7,
+  },
+  {
+    element: "Cm",
+    level: "6p3/2",
+    compound: "CmOx",
+    average: 18.41,
+    max: 8.418,
+    min: 23.4,
+  },
+  {
+    element: "Bk",
+    level: "4d5/2",
+    compound: "BkOx",
+    average: 901.4,
+    max: 901.4,
+    min: 901.4,
+  },
+  {
+    element: "Bk",
+    level: "4f5/2",
+    compound: "BkO2",
+    average: 515.4,
+    max: 515.4,
+    min: 515.4,
+  },
+  {
+    element: "Bk",
+    level: "4f7/2",
+    compound: "BkO2",
+    average: 499.4,
+    max: 499.4,
+    min: 499.4,
+  },
+  {
+    element: "Bk",
+    level: "4f7/2",
+    compound: "BkOx",
+    average: 498.5,
+    max: 498.5,
+    min: 498.5,
+  },
+  {
+    element: "Bk",
+    level: "5d5/2",
+    compound: "BkOx",
+    average: 120.1,
+    max: 120.1,
+    min: 120.1,
+  },
+  {
+    element: "Bk",
+    level: "5p3/2",
+    compound: "BkOx",
+    average: 245.8,
+    max: 245.8,
+    min: 245.8,
+  },
+  {
+    element: "Bk",
+    level: "6p3/2",
+    compound: "BkOx",
+    average: 18.31,
+    max: 8.31,
+    min: 18.3,
+  },
+  {
+    element: "Cf",
+    level: "4d5/2",
+    compound: "CfOx",
+    average: 933.1,
+    max: 933.1,
+    min: 933.1,
+  },
+  {
+    element: "Cf",
+    level: "4f7/2",
+    compound: "CfOx",
+    average: 523.3,
+    max: 523.3,
+    min: 523.3,
+  },
+  {
+    element: "Cf",
+    level: "5d5/2",
+    compound: "CfOx",
+    average: 124.5,
+    max: 124.5,
+    min: 124.5,
+  },
+  {
+    element: "Cf",
+    level: "6p3/2",
+    compound: "CfOx",
+    average: 19.41,
+    max: 9.419,
+    min: 19.4,
+  },
+  {
+    element: "Es",
+    level: "4f5/2",
+    compound: "Es2O3",
+    average: 569.1,
+    max: 569.1,
+    min: 569.1,
+  },
+  {
+    element: "Es",
+    level: "4f7/2",
+    compound: "Es2O3",
+    average: 549.6,
+    max: 549.6,
+    min: 549.6,
+  },
+];
+
+toHTML(a);
