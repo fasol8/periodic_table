@@ -94,12 +94,12 @@ const toHTML = (obj) => {
   groupElements = groupByElemet(obj);
   for (const group of groupElements) {
     let { element } = group[0];
-    let tableD = buildcomponentTD(group);
+    let tableD = buildcomponentTD(group, element);
     output += buildComponent(element, element, tableD);
   }
   fs.writeFile("tableD.txt", output, (error)=>{
     if (error){
-      console.error("Error de table dance", error);
+      console.error("Error de tableD", error);
       return ;
     }
   });
@@ -112,19 +112,23 @@ const buildComponent = (id_component, name_component, componentTD) => {
 </div>\n`;
 };
 
-const buildcomponentTD = (component) => {
-  let htmlTD = `<table>
-    <thead>
-      <tr>
-        <th>Element</th>
-        <th>Levels</th>
-        <th>Compound</th>
-        <th>Average</th>
-        <th>Min</th>
-        <th>Max</th>
+const buildcomponentTD = (component, id_component) => {
+  let htmlTD = `<table id="table${id_component}">
+  <thead>
+      <tr id="filterRow">
+          <th>Element</th>
+          <th>
+              <select id="categoryFilter">
+                  <option value="">Levels</option>
+              </select>
+          </th>
+          <th>Compound</th>
+          <th class="sortable">Average</th>
+          <th class="sortable">Min</th>
+          <th class="sortable">Max</th>
       </tr>
-    </thead>
-    <tbody>`;
+  </thead>
+  <tbody>`;
   for (const row of component) {
     let { element, level, compound, average, max, min } = row;
 
@@ -132,7 +136,7 @@ const buildcomponentTD = (component) => {
       <tr>
         <td>${element}</td>
         <td>${level}</td>
-        <td>${compound}</td>
+        <td class="compound">${compound}</td>
         <td>${average}</td>
         <td>${min}</td>
         <td>${max}</td>
